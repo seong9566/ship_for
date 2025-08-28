@@ -32,6 +32,7 @@ dependencies:
 
   # UI
   cupertino_icons: ^1.0.8
+  keyboard_actions: ^4.2.0
 
   # DB
   flutter_secure_storage: ^9.2.4
