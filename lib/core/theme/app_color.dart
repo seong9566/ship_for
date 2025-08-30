@@ -9,3 +9,8 @@ const Color grey600 = Color(0xFF757575); // 더 진한 회색 (타이틀, 보더
 const Color grey700 = Color(0xFF616161); // 강한 회색 (타이틀, 활성 아이콘)
 const Color grey800 = Color(0xFF424242); // 거의 검은 회색 (메인 텍스트, 액티브)
 const Color grey900 = Color(0xFF212121); // 가장 진한 회색 (앱바, 메인 텍스트)
+
+// 대기중 색 = FFD48B
+const Color waitingColor = Color(0xFFFFD48B);
+const Color pastelPurpleColor = Color(0xff6F59FF);
+const Color pastelRedColor = Color(0xffFF7878);

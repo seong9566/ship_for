@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:ship/core/router/router_names.dart';
 import 'package:ship/core/theme/app_color.dart';
 import 'package:ship/core/utils/keyboard_action_util.dart';
 import 'package:ship/features/widgets/custom_default_button.dart';
@@ -67,14 +69,21 @@ class _LoginViewState extends ConsumerState<LoginView> {
                   SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: CustomDefaultButton(text: '로그인', onPressed: () {}),
+                    child: CustomDefaultButton(
+                      text: '로그인',
+                      onPressed: () {
+                        context.goNamed(RouterNames.HomePage);
+                      },
+                    ),
                   ),
                   SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: CustomDefaultButton(
                       text: '회원가입',
-                      onPressed: () {},
+                      onPressed: () {
+                        context.goNamed(RouterNames.SignPage);
+                      },
                       color: Colors.white,
                       textColor: Colors.black,
                     ),

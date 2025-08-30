@@ -1,127 +1,130 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/home_providers_di.dart';
-import '../ui_models/home_ui_model.dart';
-import '../widgets/banner_slider.dart';
-import '../widgets/product_grid.dart';
+import 'package:ship/core/theme/app_color.dart';
+import 'package:ship/features/home/presentation/widgets/header.dart';
+import 'package:ship/features/home/presentation/widgets/request_item.dart';
 
-/// 홈 화면 View
-class HomeView extends ConsumerStatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
 
   @override
-  ConsumerState<HomeView> createState() => _HomeViewState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends ConsumerState<HomeView> {
-  @override
-  void initState() {
-    super.initState();
-    // 화면 진입 시 데이터 로드
-    Future.microtask(() => ref.read(homeViewModelProvider.notifier).loadHomeData());
-  }
-
+class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
-    // 상태 구독
-    final state = ref.watch(homeViewModelProvider);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(state.homeData?.title ?? '홈'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // 검색 기능 구현 예정
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              // 알림 기능 구현 예정
-            },
-          ),
-        ],
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: _mainAppBar(),
+        body: CustomScrollView(
+          slivers: [
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: FixedHeader(height: 80, child: _locationWidget()),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 16)),
+            SliverList.builder(
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return RequestItem();
+              },
+            ),
+          ],
+        ),
+        floatingActionButton: _fabBtn(),
       ),
-      body: _buildBody(state),
     );
   }
 
-  /// 상태에 따른 화면 구성
-  Widget _buildBody(state) {
-    // 로딩 상태
-    if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+  FloatingActionButton _fabBtn() {
+    return FloatingActionButton(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+      backgroundColor: grey800,
+      onPressed: () {},
+      child: const Icon(Icons.add, color: Colors.white),
+    );
+  }
 
-    // 오류 상태
-    if (state.errorMessage != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              state.errorMessage!,
-              style: const TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                ref.read(homeViewModelProvider.notifier).refresh();
-              },
-              child: const Text('다시 시도'),
-            ),
-          ],
+  AppBar _mainAppBar() {
+    return AppBar(
+      centerTitle: false,
+
+      title: Text(
+        'SHIP-8',
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
         ),
-      );
-    }
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.notifications_outlined, color: Colors.black),
+          onPressed: () {},
+        ),
 
-    // 데이터가 없는 상태
-    if (state.homeData == null) {
-      return const Center(
-        child: Text('데이터가 없습니다.'),
-      );
-    }
+        IconButton(
+          icon: const Icon(Icons.menu, color: Colors.black),
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
 
-    // 데이터 표시
-    return RefreshIndicator(
-      onRefresh: () => ref.read(homeViewModelProvider.notifier).refresh(),
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 배너 슬라이더
-            BannerSlider(banners: state.homeData!.banners),
-            
-            const SizedBox(height: 16),
-            
-            // 인기 상품 섹션
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '인기 상품',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ProductGrid(products: state.homeData!.popularProducts),
-                ],
+  Widget _locationWidget() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.location_on_outlined, color: grey800),
+              Text(
+                '현재 위치',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          /// 추후 페이지로 이동 시키기
+          SizedBox(
+            height: 42,
+            child: TextField(
+              cursorColor: grey800,
+              cursorWidth: 1.5,
+              cursorHeight: 16.0,
+              cursorRadius: const Radius.circular(2),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 16,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: grey400),
+                ),
+                hintText: '장소,주소를 입력해보세요.',
+                hintStyle: TextStyle(color: grey600, fontSize: 14),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: grey400),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: grey400),
+                ),
               ),
             ),
-            
-            const SizedBox(height: 24),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -23,7 +23,13 @@ class AppTheme {
         seedColor: const Color(0xFF1E88E5),
         brightness: Brightness.light,
       ),
-      appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+      appBarTheme: AppBarTheme(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
