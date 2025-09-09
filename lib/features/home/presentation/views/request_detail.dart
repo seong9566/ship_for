@@ -1,6 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:ship/core/theme/app_color.dart';
-import 'package:ship/features/home/presentation/widgets/grab_handle.dart';
 
 class RequestDetail extends StatefulWidget {
   const RequestDetail({super.key});
@@ -21,10 +22,8 @@ class _RequestDetailState extends State<RequestDetail> {
   final _dragCtrl = DraggableScrollableController();
 
   // 원하는 스냅/사이즈
-  static const double _minSize = 0.16; // 화면 높이의 16%
-  static const double _initSize = 0.28; // 처음 높이
-  static const double _midSize = 0.55; // 중간 스냅
-  static const double _maxSize = 0.9; // 최대
+  static const double _minSize = 0.15; // 화면 높이의 16% (도착지 아래)
+  static const double _initSize = 0.30; // 처음 높이
 
   @override
   Widget build(BuildContext context) {
@@ -44,139 +43,34 @@ class _RequestDetailState extends State<RequestDetail> {
                 _images(),
                 const SizedBox(height: 16),
                 _requestInfo(),
-                const SizedBox(height: 400), // 데모용 여백
+                // const SizedBox(height: 400), // 데모용 여백
               ],
             ),
           ),
 
           // ===== 드래그 가능한 바텀시트 =====
-          Positioned.fill(
-            bottom: 0,
-            child: DraggableScrollableSheet(
-              controller: _dragCtrl,
-              expand: false, // Stack 위에서 원하는 비율로만 차지
-              minChildSize: _minSize,
-              initialChildSize: _initSize,
-              maxChildSize: _maxSize,
-              snap: true,
-              snapSizes: const [_initSize, _midSize, _maxSize],
-              builder: (context, scrollController) {
-                return Material(
-                  elevation: 12,
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    children: [
-                      // --- 그랩 핸들 영역(빨간 박스 자리) ---
-                      GrabHandle(
-                        onDrag: (deltaDy) {
-                          final h = MediaQuery.of(context).size.height;
-                          final next = (_dragCtrl.size - deltaDy / h).clamp(
-                            _minSize,
-                            _maxSize,
-                          );
-                          _dragCtrl.jumpTo(next);
-                        },
-                      ),
-                      // 고정 헤더(옵션)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            '요청자 정보',
-                            style: TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
+          DraggableScrollableSheet(
+            initialChildSize: _initSize,
+            maxChildSize: 0.8,
+            minChildSize: _minSize,
+            snap: true,
+            snapSizes: const [_minSize, _initSize],
+            controller: _dragCtrl,
 
-                      // --- 내부 스크롤 영역 ---
-                      Expanded(
-                        child: ListView.separated(
-                          controller: scrollController, // ★ 중요: 이 컨트롤러 사용!
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                          itemCount: 20,
-                          separatorBuilder: (_, __) =>
-                              const Divider(height: 16),
-                          itemBuilder: (context, i) => ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text('아이템 ${i + 1}'),
-                            subtitle: const Text('세부 내용..'),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _stickyScrollableSheet() {
-    return SafeArea(
-      top: false,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 16,
-              offset: const Offset(0, -4),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            const SizedBox(height: 8),
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.black12,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            // 고정 헤더(선택)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: const [
-                  Text('요청자 정보', style: TextStyle(fontWeight: FontWeight.w600)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            Expanded(
-              child: ScrollConfiguration(
-                behavior: const ScrollBehavior(),
-                child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  itemCount: 20,
-                  separatorBuilder: (_, __) => const Divider(height: 16),
-                  itemBuilder: (context, i) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text('아이템 ${i + 1}'),
-                    subtitle: const Text('세부 내용..'),
+            builder: (context, scrollController) {
+              return Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
                 ),
-              ),
-            ),
-          ],
-        ),
+                child: _buildCommentSection(scrollController),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -313,6 +207,221 @@ class _RequestDetailState extends State<RequestDetail> {
           ),
         ],
       ),
+    );
+  }
+
+  // 댓글 섹션 빌더
+  Widget _buildCommentSection(ScrollController sc) {
+    return SafeArea(
+      bottom: false,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+        child: Material(
+          color: Colors.white.withValues(alpha: 0.85),
+          elevation: 12,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 56, // 드래그하기 편한 높이
+                child: SingleChildScrollView(
+                  controller: sc, // ★ DraggableScrollableSheet의 컨트롤러
+                  physics:
+                      const AlwaysScrollableScrollPhysics(), // 내용이 적어도 드래그 인식
+                  child: Column(
+                    children: [
+                      // 그랩 핸들
+                      Center(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 8, bottom: 8),
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: grey400,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ),
+                      // 헤더
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: const Text(
+                            '댓글 (2)',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // 댓글 작성 필드 (이미지 참고)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: '댓글 입력',
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: grey500, width: 1),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: grey500, width: 1),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    // 전송 버튼
+                    Container(
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: grey500,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.arrow_upward,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: const Divider(height: 1),
+              ),
+              SizedBox(height: 16),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: 20,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (_, i) => _commentItem(
+                    isMyComment: i.isEven,
+                    content: i.isEven
+                        ? '안녕하세요! 저 근처에 있어요.sadvadsvadsvasvdㅁㄴㅇ풤ㄴㅍ아ㅓㅜㅍㅇㅁ나ㅓㅜㅍㅁㅇ너ㅏ'
+                        : '오늘 오후 3시 괜찮으세요ㅁㄴㅇ퍼ㅏㅜㄴㅁ아ㅓ푼ㅁ아ㅓ푼마어ㅜ팜너우파ㅓㅜ?',
+                    actions: i.isEven ? ['약속잡기', '답글달기'] : [],
+                    actionColors: i.isEven
+                        ? [pastelGreenColor, pastelBlueColor]
+                        : [],
+                  ),
+                ),
+              ),
+              SizedBox(height: 32),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 댓글 아이템 위젯
+  Widget _commentItem({
+    required bool isMyComment,
+    required String content,
+    required List<String> actions,
+    required List<Color> actionColors,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (!isMyComment) ...[
+          CircleAvatar(radius: 16, backgroundColor: grey500),
+          const SizedBox(width: 8),
+        ],
+
+        // 버블 영역은 항상 전체 폭을 차지하게
+        Expanded(
+          child: Align(
+            alignment: isMyComment
+                ? Alignment.centerRight
+                : Alignment.centerLeft,
+            child: ConstrainedBox(
+              // 버블의 최대 너비(원하면 조절: 0.8~0.9 정도 추천)
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.85,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: grey300,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(content),
+                  ),
+                  const SizedBox(height: 8),
+
+                  if (actions.isNotEmpty && !actions.contains('작성하기'))
+                    Row(
+                      mainAxisAlignment: isMyComment
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.start,
+                      children: List.generate(
+                        actions.length,
+                        (index) => Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: TextButton(
+                            onPressed: () {},
+                            style: TextButton.styleFrom(
+                              backgroundColor: actionColors[index],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 4,
+                              ),
+                              minimumSize: const Size(0, 0),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(
+                              actions[index],
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        // (옵션) 내 댓글에 오른쪽 아바타를 두고 싶다면 여기에 배치
+        // if (isMyComment) ...[
+        //   const SizedBox(width: 8),
+        //   CircleAvatar(radius: 16, backgroundColor: grey500),
+        // ],
+      ],
     );
   }
 }

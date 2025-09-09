@@ -14,3 +14,5 @@ const Color grey900 = Color(0xFF212121); // 가장 진한 회색 (앱바, 메인
 const Color waitingColor = Color(0xFFFFD48B);
 const Color pastelPurpleColor = Color(0xff6F59FF);
 const Color pastelRedColor = Color(0xffFF7878);
+const Color pastelBlueColor = Color(0xffC5BFE4);
+const Color pastelGreenColor = Color(0xff7ED484);

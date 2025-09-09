@@ -13,6 +13,7 @@ abstract class HomeState with _$HomeState {
     @Default(false) bool isLoading,
     @Default(null) HomeUiModel? homeData,
     @Default(null) String? errorMessage,
+    @Default(0) int bottomNavIndex,
   }) = _HomeState;
 }
 
@@ -21,6 +22,10 @@ class HomeViewModel extends StateNotifier<HomeState> {
   final GetHomeDataUseCase _getHomeDataUseCase;
 
   HomeViewModel(this._getHomeDataUseCase) : super(const HomeState());
+
+  void changeIndex(int index) {
+    state = state.copyWith(bottomNavIndex: index);
+  }
 
   /// 홈 화면 데이터 로드
   Future<void> loadHomeData() async {

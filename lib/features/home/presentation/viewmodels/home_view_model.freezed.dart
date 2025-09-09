@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomeState {
 
- bool get isLoading; HomeUiModel? get homeData; String? get errorMessage;
+ bool get isLoading; HomeUiModel? get homeData; String? get errorMessage; int get bottomNavIndex;
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $HomeStateCopyWith<HomeState> get copyWith => _$HomeStateCopyWithImpl<HomeState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.homeData, homeData) || other.homeData == homeData)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.homeData, homeData) || other.homeData == homeData)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.bottomNavIndex, bottomNavIndex) || other.bottomNavIndex == bottomNavIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,homeData,errorMessage);
+int get hashCode => Object.hash(runtimeType,isLoading,homeData,errorMessage,bottomNavIndex);
 
 @override
 String toString() {
-  return 'HomeState(isLoading: $isLoading, homeData: $homeData, errorMessage: $errorMessage)';
+  return 'HomeState(isLoading: $isLoading, homeData: $homeData, errorMessage: $errorMessage, bottomNavIndex: $bottomNavIndex)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $HomeStateCopyWith<$Res>  {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) _then) = _$HomeStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, HomeUiModel? homeData, String? errorMessage
+ bool isLoading, HomeUiModel? homeData, String? errorMessage, int bottomNavIndex
 });
 
 
@@ -62,12 +62,13 @@ class _$HomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? homeData = freezed,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? homeData = freezed,Object? errorMessage = freezed,Object? bottomNavIndex = null,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,homeData: freezed == homeData ? _self.homeData : homeData // ignore: cast_nullable_to_non_nullable
 as HomeUiModel?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,bottomNavIndex: null == bottomNavIndex ? _self.bottomNavIndex : bottomNavIndex // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 /// Create a copy of HomeState
@@ -164,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  HomeUiModel? homeData,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  HomeUiModel? homeData,  String? errorMessage,  int bottomNavIndex)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
-return $default(_that.isLoading,_that.homeData,_that.errorMessage);case _:
+return $default(_that.isLoading,_that.homeData,_that.errorMessage,_that.bottomNavIndex);case _:
   return orElse();
 
 }
@@ -185,10 +186,10 @@ return $default(_that.isLoading,_that.homeData,_that.errorMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  HomeUiModel? homeData,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  HomeUiModel? homeData,  String? errorMessage,  int bottomNavIndex)  $default,) {final _that = this;
 switch (_that) {
 case _HomeState():
-return $default(_that.isLoading,_that.homeData,_that.errorMessage);case _:
+return $default(_that.isLoading,_that.homeData,_that.errorMessage,_that.bottomNavIndex);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +206,10 @@ return $default(_that.isLoading,_that.homeData,_that.errorMessage);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  HomeUiModel? homeData,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  HomeUiModel? homeData,  String? errorMessage,  int bottomNavIndex)?  $default,) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
-return $default(_that.isLoading,_that.homeData,_that.errorMessage);case _:
+return $default(_that.isLoading,_that.homeData,_that.errorMessage,_that.bottomNavIndex);case _:
   return null;
 
 }
@@ -220,12 +221,13 @@ return $default(_that.isLoading,_that.homeData,_that.errorMessage);case _:
 
 
 class _HomeState implements HomeState {
-  const _HomeState({this.isLoading = false, this.homeData = null, this.errorMessage = null});
+  const _HomeState({this.isLoading = false, this.homeData = null, this.errorMessage = null, this.bottomNavIndex = 0});
   
 
 @override@JsonKey() final  bool isLoading;
 @override@JsonKey() final  HomeUiModel? homeData;
 @override@JsonKey() final  String? errorMessage;
+@override@JsonKey() final  int bottomNavIndex;
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +239,16 @@ _$HomeStateCopyWith<_HomeState> get copyWith => __$HomeStateCopyWithImpl<_HomeSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.homeData, homeData) || other.homeData == homeData)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.homeData, homeData) || other.homeData == homeData)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.bottomNavIndex, bottomNavIndex) || other.bottomNavIndex == bottomNavIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,homeData,errorMessage);
+int get hashCode => Object.hash(runtimeType,isLoading,homeData,errorMessage,bottomNavIndex);
 
 @override
 String toString() {
-  return 'HomeState(isLoading: $isLoading, homeData: $homeData, errorMessage: $errorMessage)';
+  return 'HomeState(isLoading: $isLoading, homeData: $homeData, errorMessage: $errorMessage, bottomNavIndex: $bottomNavIndex)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$HomeStateCopyWith<$Res> implements $HomeStateCopyWith<$Re
   factory _$HomeStateCopyWith(_HomeState value, $Res Function(_HomeState) _then) = __$HomeStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, HomeUiModel? homeData, String? errorMessage
+ bool isLoading, HomeUiModel? homeData, String? errorMessage, int bottomNavIndex
 });
 
 
@@ -274,12 +276,13 @@ class __$HomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? homeData = freezed,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? homeData = freezed,Object? errorMessage = freezed,Object? bottomNavIndex = null,}) {
   return _then(_HomeState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,homeData: freezed == homeData ? _self.homeData : homeData // ignore: cast_nullable_to_non_nullable
 as HomeUiModel?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,bottomNavIndex: null == bottomNavIndex ? _self.bottomNavIndex : bottomNavIndex // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
