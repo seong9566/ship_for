@@ -16,3 +16,6 @@ const Color pastelPurpleColor = Color(0xff6F59FF);
 const Color pastelRedColor = Color(0xffFF7878);
 const Color pastelBlueColor = Color(0xffC5BFE4);
 const Color pastelGreenColor = Color(0xff7ED484);
+
+const Color greenConfirmColor = Color(0xff41BB41);
+const Color redCancelColor = Color(0xffFF7878);

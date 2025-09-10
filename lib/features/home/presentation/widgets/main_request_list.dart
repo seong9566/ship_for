@@ -81,7 +81,9 @@ class MainRequestList extends StatelessWidget {
               ),
               SizedBox(width: 8),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  debugPrint('변경 버튼 클릭!');
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 12,

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ship/core/theme/app_color.dart';
-import 'package:ship/features/home/presentation/widgets/header.dart';
 import 'package:ship/features/home/presentation/widgets/home_bottom_nav_widget.dart';
 import 'package:ship/features/home/presentation/widgets/main_request_list.dart';
-import 'package:ship/features/home/presentation/widgets/request_item.dart';
 import 'package:ship/features/home/presentation/providers/home_providers_di.dart';
 import 'package:ship/features/my_request/presentation/views/my_request_view.dart';
 import 'package:ship/features/profile/presentation/views/profile_view.dart';

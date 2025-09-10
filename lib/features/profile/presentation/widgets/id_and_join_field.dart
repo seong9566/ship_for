@@ -16,7 +16,7 @@ class IdAndJoinField extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _inputField(controller: idController, label: '아이디'),
+        _inputField(controller: idController, label: '아이디', readOnly: true),
         _inputField(
           controller: joinDateController,
           label: '가입일',
@@ -37,17 +37,17 @@ class IdAndJoinField extends StatelessWidget {
         children: [
           Text(label, style: TextStyle(fontSize: 12, color: grey700)),
           SizedBox(
-            height: 38,
             child: TextField(
               controller: controller,
               readOnly: readOnly,
+              enableInteractiveSelection: false,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
-                contentPadding: EdgeInsets.zero,
+                contentPadding: EdgeInsets.symmetric(vertical: 8),
               ),
             ),
           ),
